@@ -5,50 +5,55 @@ Hash-map schema
 
 Дан исходный хеш, примерно в таком виде:
 
-    input = {
-      :aaa => "22",
-      :aaaa => "New 22",
-      :bbb => "434",
-      :ccc => {:ddd   => "abc",
-               :ddddd => "Not needed",
-               :ggg   => "Needed",
-               :hard_to_believe => []},
-      :zzz => [
-        {:hhh  => 126,
-         :hhhh => "Don't need",
-         :kkk  => "Existing key"},
-        {:hhh  => "DoobyDo",
-         :kkk  => "Needed",
-         :mmm  => "Existing key"}
-      ]
-    }
+```ruby
+input = {
+  :aaa => "22",
+  :aaaa => "New 22",
+  :bbb => "434",
+  :ccc => {:ddd   => "abc",
+           :ddddd => "Not needed",
+           :ggg   => "Needed",
+           :hard_to_believe => []},
+  :zzz => [
+    {:hhh  => 126,
+     :hhhh => "Don't need",
+     :kkk  => "Existing key"},
+    {:hhh  => "DoobyDo",
+     :kkk  => "Needed",
+     :mmm  => "Existing key"}
+  ]
+}
+```
 
 Приведен в виде ruby hash, но мне кажется всем понятно что это такое.
 Ключи хеша могут быть и в виде строк, не суть важно. Важно, что хеш может быть многоуровневым. Ключи данного уровня помещены в массивы.
 
 Далее, имеем некий шаблон, или другими словами схему:
 
-    # Test schema
-    schema = [
-              :aaa,
-              :bbb,
-              :ooo,
-              {:ccc => [:ddd, :ggg]},
-              {:zzz => [[:hhh, :kkk, :mmm]]},
-             ]
-
+```ruby
+# Test schema
+schema = [
+          :aaa,
+          :bbb,
+          :ooo,
+          {:ccc => [:ddd, :ggg]},
+          {:zzz => [[:hhh, :kkk, :mmm]]},
+         ]
+```
 
 Здесь мы в виде массива ключей указываем, как будет выглядеть результирующий хеш после применения схемы к исходному ключу. В данном случае ключ :ccc содержит массив других ключей [:ddd, :ggg]. Ключ :zzz содержит массив объектов, каждый из которых тоже является ключем хеша.
 
 В данном случае после применения схемы к исходному хешу мы получим на выходе следующий хеш:
 
-    output = {
-      :aaa => "22",
-      :bbb => "434",
-      :ooo => nil,
-      :ccc => {:ddd => "abc", :ggg => "Needed"},
-      :zzz => [{:hhh => 126, :kkk => "Existing key", :mmm => nil},
-               {:hhh=>"DoobyDo", :kkk=>"Needed", :mmm=>"Existing key"}]
-    }
+```ruby
+output = {
+  :aaa => "22",
+  :bbb => "434",
+  :ooo => nil,
+  :ccc => {:ddd => "abc", :ggg => "Needed"},
+  :zzz => [{:hhh => 126, :kkk => "Existing key", :mmm => nil},
+           {:hhh=>"DoobyDo", :kkk=>"Needed", :mmm=>"Existing key"}]
+}
+```
 
 То есть схема описывает, данные каких ключей необходимо сохранить в результирующем хеше. В случае, если во входных данных отсутствует значение данного ключа значением назначается nil (null).
