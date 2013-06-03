@@ -6,12 +6,12 @@ transform(Input, Schema) ->
 
 transform(Input, [ { Key, [ Keys ] } | Tail ], Acc0) ->
   Value = proplists:get_value(Key, Input, undefined),
-  Acc1 = [{ Key, [ transform(Elem, Keys, []) || Elem <- Value ] } | Acc0],
+  Acc1 = [{ Key, [ transform(Elem, Keys) || Elem <- Value ] } | Acc0],
   transform(Input, Tail, Acc1);
 
 transform(Input, [ { Key, Keys } | Tail ], Acc0) ->
   Value = proplists:get_value(Key, Input, undefined),
-  Acc1 = [{ Key, transform(Value, Keys, []) } | Acc0],
+  Acc1 = [{ Key, transform(Value, Keys) } | Acc0],
   transform(Input, Tail, Acc1);
 
 transform(Input, [ Key | Tail ], Acc0) ->
